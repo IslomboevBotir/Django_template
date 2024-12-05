@@ -27,7 +27,7 @@ class DocumentsViews(ListAPIView):
 class DocumentUploadViews(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, pk):
+    def post(self, request):
         if request.user.role != "employee":
             return Response({"error": "Only employees can upload documents"}, status=403)
 
@@ -38,7 +38,7 @@ class DocumentUploadViews(APIView):
         return Response(serializer.errors, status=400)
 
 
-class DocumentDetailView(APIView):
+class DocumentDetailViews(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
@@ -57,10 +57,10 @@ class DocumentDetailView(APIView):
             return Response({"error": "Document not found"}, status=404)
 
 
-class DocumentStatusUpdateView(APIView):
+class DocumentStatusUpdateViews(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, pk):
+    def patch(self, request, pk):
         try:
             document = Documents.objects.get(pk=pk)
 
@@ -79,17 +79,17 @@ class DocumentStatusUpdateView(APIView):
             return Response({"error": "Document not found"}, status=404)
 
 
-class AssignDocumentView(APIView):
+class AssignDocumentViews(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, pk):
+    def patch(self, request, pk):
         try:
             document = Documents.objects.get(pk=pk)
 
             if request.user.role != "manager":
                 return Response({"error": "Access denied"}, status=403)
 
-            assistant_id = request.data.get("assigned_to")
+            assistant_id = request.data.get("assigned_to_id")
             document.assigned_to_id = assistant_id
             document.save()
             return Response({"message": "The document has been assigned to an assistant"}, status=200)

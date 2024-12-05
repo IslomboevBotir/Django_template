@@ -14,17 +14,17 @@ def create_users():
         is_staff=True
     )
     User.objects.create_user(
+        username='user3',
+        password='user3user3',
+        email='user3@example.com',
+        role='assistant',
+        is_staff=True
+    )
+    User.objects.create_user(
         username='user2',
         password='user2user2',
         email='user2@example.com',
         role='manager',
-        is_staff=True
-    )
-    User.objects.create_user(
-        username='user3',
-        password='user3user3',
-        email='user3@example.com',
-        role='admin',
         is_staff=True
     )
 
