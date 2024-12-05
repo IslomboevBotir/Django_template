@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    command: >
+      sh -c "
+      python src/manage.py migrate;
+      python src/create_users.py;
+      exec gunicorn --chdir src src.ofb_api.wsgi:application --bind 0.0.0.0:8000 --workers 2;
+      "
+
+  db:
+    image: postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWD}
+    env_file:
+      - .env
